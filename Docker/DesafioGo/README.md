@@ -1,7 +1,7 @@
 # Desafio GO
 
 Desafio:
-"Esse desafio é muito empolgante principalmente se você nunca trabalhou com a linguagem Go!
+_"Esse desafio é muito empolgante principalmente se você nunca trabalhou com a linguagem Go!
 Você terá que publicar uma imagem no docker hub. Quando executarmos:
 docker run <seu-user>/fullcycle
 Temos que ter o seguinte resultado: Full Cycle Rocks!!
@@ -11,7 +11,7 @@ Lembrando que a Go Lang possui imagens oficiais prontas, vale a pena consultar o
 Dica: No vídeo de introdução sobre o Docker quando falamos sobre o sistema de arquivos em camadas, apresento uma imagem "raiz", talvez seja uma boa utilizá-la.
 Suba o projeto em um repositório Git remoto e coloque o link da imagem que subiu no Docker Hub.
 Compartilhe o link do repositório do Git remoto para corrigirmos seu projeto.
-Divirta-se!"
+Divirta-se!"_
 
 Para realizar o donwload da imagem:
 docker pull andrepauli91/fullcycle
