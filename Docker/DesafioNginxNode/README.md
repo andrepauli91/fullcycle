@@ -8,10 +8,3 @@ Full Cycle Rocks!
 Gere o docker-compose de uma forma que basta apenas rodarmos: docker-compose up -d que tudo deverá estar funcionando e disponível na porta: 8080.
 Suba tudo em um repositório e faça a entrega.
 * A linguagem de programação para este desafio é Node/JavaScript."_
-
-
-Para realizar o donwload da imagem:
-docker pull andrepauli91/fullcycle
-
-Para rodar a imagem:
-docker run andrepauli91/fullcycle
