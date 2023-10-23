@@ -1,61 +1,87 @@
 const express = require('express')
 const app = express()
-const port = 3306
+
+const port = 3000
+
 const config = {
-    host: 'db',
-    user: 'root',
-    password: 'root',
-    database: 'nodedb'
+  host: 'mysql',
+  user: 'root',
+  password: 'root',
+  database: 'nodedb'
 }
+
+
 const mysql = require('mysql')
-const connect = mysql.createConnection(config)
+const connection = mysql.createConnection(config)
 
-connect.query(
-    `CREATE TABLE IF NOT EXISTS people (
-         id INT(11) NOT NULL AUTO_INCREMENT,
-         name VARCHAR(255) NOT NULL,
-         PRIMARY KEY (id)
-     )`
- )
 
-connect.query(
-     `INSERT INTO people 
-     (
-         name
-     ) 
-     VALUES 
-     ('André'), 
-     ('Mikeli'), 
-     ('Emanueli')
- `)
+const table = sqlTable(connection)
 
-app.get('/', (req,res) => {
+function sqlTable(connection) {
+  return new Promise((resolve, reject) => {
+    const sql = `create table if not exists people (
+      id int not null auto_increment,
+      name varchar(255) not null,
+      primary key (id)
+    )`
+    connection.query(sql, (err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+}
 
-    connect.query(
-        'SELECT * FROM people', 
-        (error, results) => {
-            if (error) throw error;
+const insert = sqlInsert(connection)
 
-            console.log(results);
-            
-            let table = '<table>';
-            table += '<tr><th>ID</th><th>Nome</th></tr>';
+function sqlInsert(connection) {
+  return new Promise((resolve, reject) => {
+    const sql = `insert into people(name) values ?`
+    const peoples = [['Lucian'], ['Luiz'], ['Gabriel'], ['André'], ['Mikeli'], ['Emanueli']]
+    connection.query(sql, [peoples], (err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+        console.log(`Foram inseridas ${result.affectedRows} pessoas!`)
+      }
+    })
+  })
+}
 
-            results.forEach((result) => {
-                table += '<tr><td>' + result.id + '</td><td>' + result.name + '</td></tr>';
-            });
-            table += '</table>';
-
-            res.send(
-                    '<h1>Full Cycle Rocks!!!</h1>' +
-                    '<br><b>Lista da tabela People: </b>' + 
-                    table
-                );
-        });
+insert.then(result => {
+  console.log(result)
 })
 
-connect.end()
+const select = sqlSelect(connection)
 
-app.listen(port, ()=> {
-    console.log('Rodando na porta ' + port)
+function sqlSelect(connection) {
+  return new Promise((resolve, reject) => {
+    const sql = `select * from people`
+    connection.query(sql, (err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+}
+
+const listPeople = async () => {
+  const allPeople = (await select)
+  console.log(allPeople)
+  return allPeople
+}
+
+app.get('/', async (req, res) => {
+  const peoples = await listPeople()
+  const listPeoples = '<ul>' + peoples.map(item => `<li align="center">${item.name}</li>`).join('') + '</ul>'
+  res.send(`<h1 align="center">Full Cycle Rocks!</h1>\n${listPeoples}`)
+})
+
+app.listen(port, () => {
+  console.log(`Ouvindo na porta: ${port}`)
 })

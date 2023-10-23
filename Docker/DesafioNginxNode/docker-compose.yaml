@@ -21,8 +21,7 @@ services:
 
     nginx:
         build:
-            context: ./nginx
-        image: andrepauli91/nginx
+            context: ./Nginx
         container_name: nginx
         networks:
             - nginx-node-net
@@ -33,19 +32,16 @@ services:
 
     node:
         build:
-            context: ./node
-        image: andrepauli91/node
+            context: ./Node
         container_name: node
-        entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
+        entrypoint: dockerize -wait tcp://mysql:3306 -timeout 20s sh -c "npm install && node index.js"
         networks:
             - nginx-node-net
-        ports:
-            - "3000:3000"
         depends_on:
             - mysql
         volumes:
-            - ./node:/usr/src/app
-            - /usr/src/app/node_modules
+            - ./Node:/usr/src/app
+            # - /usr/src/app/node_modules # volume anonimo (link simbolico)
 
 networks:
     nginx-node-net:
